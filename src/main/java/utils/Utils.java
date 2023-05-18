@@ -5,6 +5,7 @@ import models.Crianca;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Utils {
@@ -45,7 +46,8 @@ public class Utils {
         System.out.println("1 - Cadastrar");
         System.out.println("2 - Consultar");
         System.out.println("3 - Sobre");
-        System.out.println("4 - Sair");
+        System.out.println("4 - Remover cadastro");
+        System.out.println("5 - Sair");
         System.out.println(linhas);
     }
 
@@ -69,5 +71,9 @@ public class Utils {
 
         }
 
+    }
+    public static int gerarId(){
+        Random randomid = new Random();
+        return randomid.nextInt(900)+100;
     }
 }

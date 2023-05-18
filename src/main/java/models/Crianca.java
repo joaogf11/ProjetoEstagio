@@ -1,6 +1,7 @@
 package models;
 
 public class Crianca {
+    private int id;
     private String nome;
     private int idade;
     private String genero;
@@ -33,5 +34,11 @@ public class Crianca {
 
     public void setGenero(String genero) {
         this.genero = genero;
+    }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 }
