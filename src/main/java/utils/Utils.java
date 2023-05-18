@@ -1,46 +1,49 @@
 package utils;
+
 import com.google.gson.Gson;
 import models.Crianca;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Utils {
+    private static final Set<Integer> generatedIds = new HashSet<>();
 
     public void verificationBank() {
         Gson gson = new Gson();
-        File file = new File("/home/fullcam/IdeaProjects/javaAulas/untitled1/criancas.json");
+        File file = new File("/home/fullcam/IdeaProjects/projeto1/criancas.json");
         if (file.exists()) {
             System.out.println("O banco já existe.");
-
         } else {
             try {
                 file.createNewFile();
-                FileWriter fileWriter = new FileWriter("/home/fullcam/IdeaProjects/javaAulas/untitled1/criancas.json");
+                FileWriter fileWriter = new FileWriter(file);
                 gson.toJson(new ArrayList<Crianca>(), fileWriter);
                 fileWriter.flush();
                 fileWriter.close();
                 System.out.println("Banco criado com sucesso.");
             } catch (Exception ex) {
-                System.out.println("Não foi possivel criar o banco.");
+                System.out.println("Não foi possível criar o banco.");
                 sleep(5);
                 System.exit(0);
             }
         }
     }
-    public void sleep(int seconds){
-        try{
-            Thread.sleep(1000*seconds);
-        }
-        catch (Exception exc){
-            System.out.printf("Erro ao executar sleep.");
 
+    public void sleep(int seconds) {
+        try {
+            Thread.sleep(1000 * seconds);
+        } catch (Exception exc) {
+            System.out.println("Erro ao executar sleep.");
         }
     }
-    public void printMenu(String linhas){
+
+    public void printMenu(String linhas) {
         System.out.println(linhas);
         System.out.println("Escolha uma opção:");
         System.out.println("1 - Cadastrar");
@@ -51,9 +54,9 @@ public class Utils {
         System.out.println(linhas);
     }
 
-    public Crianca validInput(String linhas){
-        while (true){
-            try{
+    public Crianca validInput(String linhas) {
+        while (true) {
+            try {
                 System.out.println(linhas);
                 System.out.print("Digite o nome da criança: ");
                 String nome = new Scanner(System.in).nextLine();
@@ -64,16 +67,28 @@ public class Utils {
                 System.out.println(linhas);
                 System.out.println(nome + " foi cadastrada com sucesso para adoção!");
                 return new Crianca(nome, idade, genero);
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 System.out.println("Dado inválido. Tente novamente.");
             }
-
-
         }
-
     }
-    public static int gerarId(){
+
+    public static int gerarId() {
         Random randomid = new Random();
-        return randomid.nextInt(900)+100;
+        return randomid.nextInt(900) + 100;
+    }
+
+    public int generateUniqueID() {
+        int id;
+        do {
+            id = generateRandomID();
+        } while (generatedIds.contains(id));
+        generatedIds.add(id);
+        return id;
+    }
+
+    private int generateRandomID() {
+        Random random = new Random();
+        return random.nextInt(900) + 100;
     }
 }

@@ -2,27 +2,28 @@ package org.example;
 
 import com.google.gson.Gson;
 import models.Crianca;
-import utils.ManipulationFIle;
 import utils.Utils;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.HashSet;
 
 public class AdoptTech {
-    private static Set<Integer> generatedIds = new HashSet<>(); // Conjunto para armazenar os IDs gerados
+    private static final Set<Integer> generatedIds = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
         Utils util = new Utils();
-        ManipulationFIle manipulationFIle = new ManipulationFIle();
         util.verificationBank();
-        ArrayList<Crianca> bancoDeCrianca = manipulationFIle.readFile();
+        ArrayList<Crianca> bancoDeCrianca = new ArrayList<>();
         int opcao;
         String linhas = "=".repeat(50);
 
         System.out.println("Bem-vindo ao AdoptTech!");
-
 
         do {
             util.printMenu(linhas);
@@ -31,11 +32,12 @@ public class AdoptTech {
             switch (opcao) {
                 case 1:
                     Crianca crianca = util.validInput(linhas);
-                    int id = generateUniqueID();
+                    int id = util.generateUniqueID();
                     crianca.setId(id);
                     bancoDeCrianca.add(crianca);
                     try {
-                        FileWriter fileWriter = new FileWriter("/home/fullcam/IdeaProjects/javaAulas/untitled1/criancas.json");
+                        File file = new File("/home/fullcam/IdeaProjects/projeto1/criancas.json");
+                        FileWriter fileWriter = new FileWriter(file);
                         gson.toJson(bancoDeCrianca, fileWriter);
                         fileWriter.flush();
                         fileWriter.close();
@@ -90,19 +92,5 @@ public class AdoptTech {
                     System.out.println("Opção inválida. Tente novamente.");
             }
         } while (opcao != 5);
-    }
-
-    private static int generateUniqueID() {
-        int id;
-        do {
-            id = generateRandomID();
-        } while (generatedIds.contains(id));
-        generatedIds.add(id);
-        return id;
-    }
-
-    private static int generateRandomID() {
-        Random random = new Random();
-        return random.nextInt(900) + 100;
     }
 }
