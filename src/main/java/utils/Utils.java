@@ -49,9 +49,16 @@ public class Utils {
         System.out.println("1 - Cadastrar");
         System.out.println("2 - Consultar");
         System.out.println("3 - Sobre");
-        System.out.println("4 - Remover cadastro");
-        System.out.println("5 - Sair");
+        System.out.println("4 - Sair");
         System.out.println(linhas);
+    }
+
+    public void printOptions(){
+        System.out.println("Escolha uma opção:");
+        System.out.println("1- Pesquisar criança");
+        System.out.println("2- Remover criança");
+        System.out.println("3- Alterar cadastro");
+        System.out.println("4- Voltar ao menu");
     }
 
     public Crianca validInput(String linhas) {

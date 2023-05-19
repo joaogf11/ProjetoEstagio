@@ -2,15 +2,12 @@ package org.example;
 
 import com.google.gson.Gson;
 import models.Crianca;
+import utils.ManipulationFIle;
 import utils.Utils;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 public class AdoptTech {
     private static final Set<Integer> generatedIds = new HashSet<>();
@@ -18,8 +15,9 @@ public class AdoptTech {
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
         Utils util = new Utils();
+        ManipulationFIle manipulationFIle = new ManipulationFIle();
         util.verificationBank();
-        ArrayList<Crianca> bancoDeCrianca = new ArrayList<>();
+        ArrayList<Crianca> bancoDeCrianca = manipulationFIle.readFile();
         int opcao;
         String linhas = "=".repeat(50);
 
@@ -36,8 +34,7 @@ public class AdoptTech {
                     crianca.setId(id);
                     bancoDeCrianca.add(crianca);
                     try {
-                        File file = new File("/home/fullcam/IdeaProjects/projeto1/criancas.json");
-                        FileWriter fileWriter = new FileWriter(file);
+                        FileWriter fileWriter = new FileWriter("/home/fullcam/IdeaProjects/projeto1/criancas.json");
                         gson.toJson(bancoDeCrianca, fileWriter);
                         fileWriter.flush();
                         fileWriter.close();
@@ -58,6 +55,87 @@ public class AdoptTech {
                                     "Idade: " + c.getIdade() + " anos, Gênero: " + c.getGenero());
                         }
                     }
+
+                    boolean continuar = true;
+                    do {
+                        System.out.println(linhas);
+                        util.printOptions();
+                        System.out.println(linhas);
+                        int options = Integer.parseInt(new Scanner(System.in).nextLine());
+                        switch (options) {
+                            case 1:
+                                System.out.println(linhas);
+                                System.out.println("Digite o ID da criança que deseja pesquisar:");
+                                int idPesquisa = Integer.parseInt(new Scanner(System.in).nextLine());
+                                Crianca criancaEncontrada = null;
+                                for (Crianca c : bancoDeCrianca) {
+                                    if (c.getId() == idPesquisa) {
+                                        criancaEncontrada = c;
+                                        break;
+                                    }
+                                }
+                                if (criancaEncontrada != null) {
+                                    System.out.println("Criança encontrada:");
+                                    System.out.println("ID: " + criancaEncontrada.getId() + ", Nome: " + criancaEncontrada.getNome() +
+                                            ", Idade: " + criancaEncontrada.getIdade() + " anos, Gênero: " + criancaEncontrada.getGenero());
+                                } else {
+                                    System.out.println("Criança não encontrada.");
+                                }
+                                break;
+                            case 2:
+                                System.out.println(linhas);
+                                if (bancoDeCrianca.size() == 0) {
+                                    System.out.println("Não há crianças cadastradas.");
+                                } else {
+                                    System.out.println("Selecione a criança que deseja remover:");
+                                    for (int i = 0; i < bancoDeCrianca.size(); i++) {
+                                        Crianca c = bancoDeCrianca.get(i);
+                                        System.out.println((i + 1) + ". ID: " + c.getId() + ", Nome: " + c.getNome() + ", " +
+                                                "Idade: " + c.getIdade() + " anos, Gênero: " + c.getGenero());
+                                    }
+                                    int escolha = Integer.parseInt(new Scanner(System.in).nextLine());
+                                    if (escolha >= 1 && escolha <= bancoDeCrianca.size()) {
+                                        Crianca criancaRemovida = bancoDeCrianca.remove(escolha - 1);
+                                        System.out.println("A criança " + criancaRemovida.getNome() + " foi removida do banco de dados.");
+                                    } else {
+                                        System.out.println("Opção inválida. Nenhuma criança foi removida.");
+                                    }
+                                }
+                                break;
+                            case 3:
+                                System.out.println(linhas);
+                                if (bancoDeCrianca.size() == 0) {
+                                    System.out.println("Não há crianças cadastradas.");
+                                } else {
+                                    System.out.println("Selecione a criança que deseja alterar os dados:");
+                                    for (int i = 0; i < bancoDeCrianca.size(); i++) {
+                                        Crianca c = bancoDeCrianca.get(i);
+                                        System.out.println((i + 1) + ". ID: " + c.getId() + ", Nome: " + c.getNome() + ", " +
+                                                "Idade: " + c.getIdade() + " anos, Gênero: " + c.getGenero());
+                                    }
+                                    int escolha = Integer.parseInt(new Scanner(System.in).nextLine());
+                                    if (escolha >= 1 && escolha <= bancoDeCrianca.size()) {
+                                        Crianca criancaSelecionada = bancoDeCrianca.get(escolha - 1);
+                                        System.out.println("Digite os novos dados da criança:");
+
+                                        Crianca novaCrianca = util.validInput(linhas);
+                                        novaCrianca.setId(criancaSelecionada.getId());
+
+                                        bancoDeCrianca.set(escolha - 1, novaCrianca);
+                                        System.out.println("Os dados da criança foram atualizados com sucesso!");
+                                    } else {
+                                        System.out.println("Opção inválida. Nenhuma criança foi alterada.");
+                                    }
+                                }
+                                break;
+                            case 4:
+                                continuar = false;
+                                opcao = 0;
+                                break;
+                            default:
+                                System.out.println("Opção inválida. Tente novamente.");
+                        }
+                    } while (continuar);
                     break;
                 case 3:
                     System.out.println(linhas);
@@ -65,32 +143,11 @@ public class AdoptTech {
                     break;
                 case 4:
                     System.out.println(linhas);
-                    if (bancoDeCrianca.size() == 0) {
-                        System.out.println("Não há crianças cadastradas.");
-                    } else {
-                        System.out.println("Selecione a criança que deseja remover:");
-                        for (int i = 0; i < bancoDeCrianca.size(); i++) {
-                            Crianca c = bancoDeCrianca.get(i);
-                            System.out.println((i + 1) + ". ID: " + c.getId() + ", Nome: " + c.getNome() + ", " +
-                                    "Idade: " + c.getIdade() + " anos, Gênero: " + c.getGenero());
-                        }
-                        int escolha = Integer.parseInt(new Scanner(System.in).nextLine());
-                        if (escolha >= 1 && escolha <= bancoDeCrianca.size()) {
-                            Crianca criancaRemovida = bancoDeCrianca.remove(escolha - 1);
-                            System.out.println("A criança " + criancaRemovida.getNome() + " foi removida do banco de dados.");
-                        } else {
-                            System.out.println("Opção inválida. Nenhuma criança foi removida.");
-                        }
-                    }
-                    break;
-                case 5:
-                    System.out.println(linhas);
-                    System.out.println("Obrigado por usar o AdoptTech. Até a próxima!");
-                    System.out.println(linhas);
+                    System.out.println("Obrigado por usar o AdoptTech. Até mais!");
                     break;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
-        } while (opcao != 5);
+        } while (opcao != 4);
     }
 }

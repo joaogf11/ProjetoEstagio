@@ -40,3 +40,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/criancas.json
+/.idea/
+/.idea/
+/gradle/
+/src/test/
